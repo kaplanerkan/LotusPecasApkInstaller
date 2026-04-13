@@ -1,7 +1,7 @@
 <Window x:Class="LotusPecasApkInstaller.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Lotus Pecas APK Installer v1.0.0" Height="820" Width="720" MinHeight="600"
+        Title="Lotus Pecas APK Installer v1.0.1" Height="820" Width="720" MinHeight="600"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource BackgroundBrush}"
         FontFamily="Segoe UI">
