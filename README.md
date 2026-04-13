@@ -2,6 +2,8 @@
 
 WPF .NET 9 uygulaması — Android cihazlara USB veya IP üzerinden bağlanıp APK yükler.
 
+![Lotus Pecas APK Installer](screenshot.png)
+
 ## Özellikler
 
 - 🔌 USB cihazları otomatik algılama
