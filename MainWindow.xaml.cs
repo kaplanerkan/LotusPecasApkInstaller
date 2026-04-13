@@ -22,6 +22,9 @@ public partial class MainWindow : Window
             ["subtitle"] = "Android cihazlara APK yükle",
             ["device"] = "Cihaz:",
             ["refresh"] = "🔄 Yenile",
+            ["show"] = "🖥 Göster",
+            ["scrcpyMissing"] = "scrcpy.exe bulunamadı",
+            ["launchingScrcpy"] = "Ekran açılıyor: {0}",
             ["ip"] = "IP:",
             ["connect"] = "🔌 Bağlan",
             ["disconnect"] = "⏏ Kes",
@@ -58,6 +61,9 @@ public partial class MainWindow : Window
             ["subtitle"] = "APK auf Android-Geräten installieren",
             ["device"] = "Gerät:",
             ["refresh"] = "🔄 Aktualisieren",
+            ["show"] = "🖥 Anzeigen",
+            ["scrcpyMissing"] = "scrcpy.exe nicht gefunden",
+            ["launchingScrcpy"] = "Bildschirm öffnen: {0}",
             ["ip"] = "IP:",
             ["connect"] = "🔌 Verbinden",
             ["disconnect"] = "⏏ Trennen",
@@ -94,6 +100,9 @@ public partial class MainWindow : Window
             ["subtitle"] = "Installer des APK sur appareils Android",
             ["device"] = "Appareil :",
             ["refresh"] = "🔄 Actualiser",
+            ["show"] = "🖥 Afficher",
+            ["scrcpyMissing"] = "scrcpy.exe introuvable",
+            ["launchingScrcpy"] = "Ouverture de l'écran : {0}",
             ["ip"] = "IP :",
             ["connect"] = "🔌 Connecter",
             ["disconnect"] = "⏏ Déconnecter",
@@ -155,6 +164,7 @@ public partial class MainWindow : Window
         SubtitleText.Text = T("subtitle");
         DeviceLabel.Text = T("device");
         RefreshButton.Content = T("refresh");
+        ShowButton.Content = T("show");
         IpLabel.Text = T("ip");
         IpTextBox.ToolTip = T("ipTip");
         ConnectButton.Content = T("connect");
@@ -202,6 +212,43 @@ public partial class MainWindow : Window
     }
 
     private async void RefreshDevices_Click(object sender, RoutedEventArgs e) => await LoadDevicesAsync();
+
+    private void ShowScreen_Click(object sender, RoutedEventArgs e)
+    {
+        if (DeviceComboBox.SelectedItem is not string device)
+        {
+            CustomMessageBox.Show(this, T("selectDevice"), T("warn"), CustomBoxIcon.Warning);
+            return;
+        }
+
+        var scrcpyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "scrcpy.exe");
+        if (!File.Exists(scrcpyPath))
+        {
+            CustomMessageBox.Show(this, T("scrcpyMissing"), T("error"), CustomBoxIcon.Error);
+            return;
+        }
+
+        try
+        {
+            SetStatus(string.Format(T("launchingScrcpy"), device));
+            Log($"\n>>> scrcpy -s {device}");
+            var psi = new ProcessStartInfo
+            {
+                FileName = scrcpyPath,
+                WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+            };
+            psi.ArgumentList.Add("-s");
+            psi.ArgumentList.Add(device);
+            Process.Start(psi);
+        }
+        catch (Exception ex)
+        {
+            Log($"ERROR: {ex.Message}");
+            CustomMessageBox.Show(this, ex.Message, T("error"), CustomBoxIcon.Error);
+        }
+    }
 
     private async void ConnectIp_Click(object sender, RoutedEventArgs e)
     {

@@ -20,7 +20,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="adb.exe;AdbWinApi.dll;AdbWinUsbApi.dll">
+    <Content Include="adb.exe;AdbWinApi.dll;AdbWinUsbApi.dll;scrcpy.exe;scrcpy-server;SDL2.dll;avcodec-60.dll;avformat-60.dll;avutil-58.dll;libusb-1.0.dll;swresample-4.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
