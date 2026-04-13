@@ -31,4 +31,10 @@ dotnet publish -c Release
 
 ## Version
 
-v1.0.0
+v1.0.1
+
+## Lisans
+
+[MIT License](LICENSE) — özgürce kullanabilir, değiştirebilir ve dağıtabilirsiniz. Maddi bir beklenti yoktur.
+
+Paket içinde dağıtılan `adb.exe` (Apache 2.0, © Google) ve `scrcpy.exe` (Apache 2.0, © Genymobile) üçüncü taraf araçlardır; kendi lisansları geçerlidir.
