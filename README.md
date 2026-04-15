@@ -31,7 +31,7 @@ dotnet publish -c Release
 
 ## Version
 
-v1.0.1
+v1.0.2 — Android 11+ kablosuz eşleştirme (adb pair) desteği eklendi
 
 ## Lisans
 

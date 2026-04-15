@@ -55,6 +55,20 @@ public partial class MainWindow : Window
             ["connectFailed"] = "✗ Bağlantı başarısız",
             ["apkFilter"] = "APK Dosyaları (*.apk)|*.apk|Tüm Dosyalar (*.*)|*.*",
             ["selectApkTitle"] = "APK Seç",
+            ["pairTitle"] = "🔐 Kablosuz Eşleştirme (Android 11+)",
+            ["pairHost"] = "① Eşleştirme IP:Port",
+            ["pairCode"] = "Kod",
+            ["pairConnect"] = "② Bağlantı IP:Port",
+            ["pairButton"] = "🔗 Eşleştir ve Bağlan",
+            ["pairHint"] = "Telefonda: Geliştirici seçenekleri → Kablosuz hata ayıklama.\n① Eşleştirme portu: 'Eşleştirme kodu ile cihaz eşleştir' ekranında görünür (kod ile birlikte).\n② Bağlantı portu: ana Kablosuz hata ayıklama ekranında 'IP adresi ve port' altında görünür — pair portundan farklıdır.",
+            ["pairHostTip"] = "Örn: 192.168.1.20:37251",
+            ["pairCodeTip"] = "6 haneli eşleştirme kodu",
+            ["pairConnectTip"] = "Örn: 192.168.1.20:41235 (pair portundan FARKLI)",
+            ["pairMissing"] = "Eşleştirme IP:Port ve kodu girin.",
+            ["pairBadHost"] = "Eşleştirme adresi 'IP:Port' formatında olmalı.",
+            ["pairing"] = "Eşleştiriliyor: {0}",
+            ["paired"] = "✓ Eşleştirme başarılı",
+            ["pairFailed"] = "✗ Eşleştirme başarısız",
         },
         ["de"] = new()
         {
@@ -94,6 +108,20 @@ public partial class MainWindow : Window
             ["connectFailed"] = "✗ Verbindung fehlgeschlagen",
             ["apkFilter"] = "APK-Dateien (*.apk)|*.apk|Alle Dateien (*.*)|*.*",
             ["selectApkTitle"] = "APK auswählen",
+            ["pairTitle"] = "🔐 Drahtlose Kopplung (Android 11+)",
+            ["pairHost"] = "① Pairing IP:Port",
+            ["pairCode"] = "Code",
+            ["pairConnect"] = "② Verbindungs-IP:Port",
+            ["pairButton"] = "🔗 Koppeln und verbinden",
+            ["pairHint"] = "Am Telefon: Entwickleroptionen → Drahtloses Debugging.\n① Pairing-Port: im Bildschirm 'Gerät mit Kopplungscode koppeln' (mit Code).\n② Verbindungs-Port: im Hauptbildschirm 'Drahtloses Debugging' unter 'IP-Adresse & Port' — unterscheidet sich vom Pairing-Port.",
+            ["pairHostTip"] = "Bsp.: 192.168.1.20:37251",
+            ["pairCodeTip"] = "6-stelliger Kopplungscode",
+            ["pairConnectTip"] = "Bsp.: 192.168.1.20:41235 (ANDERS als Pairing-Port)",
+            ["pairMissing"] = "Pairing IP:Port und Code eingeben.",
+            ["pairBadHost"] = "Pairing-Adresse muss im Format 'IP:Port' sein.",
+            ["pairing"] = "Koppeln: {0}",
+            ["paired"] = "✓ Kopplung erfolgreich",
+            ["pairFailed"] = "✗ Kopplung fehlgeschlagen",
         },
         ["fr"] = new()
         {
@@ -133,6 +161,20 @@ public partial class MainWindow : Window
             ["connectFailed"] = "✗ Échec de la connexion",
             ["apkFilter"] = "Fichiers APK (*.apk)|*.apk|Tous les fichiers (*.*)|*.*",
             ["selectApkTitle"] = "Choisir APK",
+            ["pairTitle"] = "🔐 Appairage sans fil (Android 11+)",
+            ["pairHost"] = "① IP:Port d'appairage",
+            ["pairCode"] = "Code",
+            ["pairConnect"] = "② IP:Port de connexion",
+            ["pairButton"] = "🔗 Appairer et connecter",
+            ["pairHint"] = "Sur le téléphone : Options développeur → Débogage sans fil.\n① Port d'appairage : écran 'Appairer l'appareil avec un code' (avec le code).\n② Port de connexion : écran principal 'Débogage sans fil' sous 'Adresse IP et port' — différent du port d'appairage.",
+            ["pairHostTip"] = "Ex : 192.168.1.20:37251",
+            ["pairCodeTip"] = "Code d'appairage à 6 chiffres",
+            ["pairConnectTip"] = "Ex : 192.168.1.20:41235 (DIFFÉRENT du port d'appairage)",
+            ["pairMissing"] = "Saisir IP:Port d'appairage et code.",
+            ["pairBadHost"] = "L'adresse d'appairage doit être au format 'IP:Port'.",
+            ["pairing"] = "Appairage : {0}",
+            ["paired"] = "✓ Appairage réussi",
+            ["pairFailed"] = "✗ Échec de l'appairage",
         },
     };
 
@@ -169,6 +211,15 @@ public partial class MainWindow : Window
         IpTextBox.ToolTip = T("ipTip");
         ConnectButton.Content = T("connect");
         DisconnectButton.Content = T("disconnect");
+        PairTitleText.Text = T("pairTitle");
+        PairHostLabel.Text = T("pairHost");
+        PairCodeLabel.Text = T("pairCode");
+        PairConnectLabel.Text = T("pairConnect");
+        PairButton.Content = T("pairButton");
+        PairHintText.Text = T("pairHint");
+        PairHostTextBox.ToolTip = T("pairHostTip");
+        PairCodeTextBox.ToolTip = T("pairCodeTip");
+        PairConnectTextBox.ToolTip = T("pairConnectTip");
         ApkLabel.Text = T("apk");
         BrowseButton.Content = T("browse");
         InstallButton.Content = T("install");
@@ -276,6 +327,82 @@ public partial class MainWindow : Window
         else
         {
             SetStatus(T("connectFailed"));
+        }
+    }
+
+    private async void PairDevice_Click(object sender, RoutedEventArgs e)
+    {
+        var pairAddr = PairHostTextBox.Text?.Trim();
+        var code = PairCodeTextBox.Text?.Trim();
+
+        if (string.IsNullOrWhiteSpace(pairAddr) || string.IsNullOrWhiteSpace(code))
+        {
+            CustomMessageBox.Show(this, T("pairMissing"), T("warn"), CustomBoxIcon.Warning);
+            return;
+        }
+        if (!pairAddr.Contains(':'))
+        {
+            CustomMessageBox.Show(this, T("pairBadHost"), T("warn"), CustomBoxIcon.Warning);
+            return;
+        }
+
+        PairButton.IsEnabled = false;
+        try
+        {
+            SetStatus(string.Format(T("pairing"), pairAddr));
+            Log($"\n>>> adb pair {pairAddr} {new string('*', code.Length)}");
+            var pairResult = await RunAdbAsync("pair", pairAddr, code);
+            Log(pairResult);
+
+            var success = pairResult.Contains("Successfully paired", StringComparison.OrdinalIgnoreCase)
+                          || pairResult.Contains("paired to", StringComparison.OrdinalIgnoreCase);
+
+            if (!success)
+            {
+                SetStatus(T("pairFailed"));
+                CustomMessageBox.Show(this, T("pairFailed"), T("error"), CustomBoxIcon.Error);
+                return;
+            }
+
+            SetStatus(T("paired"));
+            PairCodeTextBox.Clear();
+
+            // Auto-connect: use dedicated PairConnectTextBox, fall back to IpTextBox, else derive from pair host
+            var connectTarget = PairConnectTextBox.Text?.Trim();
+            if (string.IsNullOrWhiteSpace(connectTarget))
+                connectTarget = IpTextBox.Text?.Trim();
+            if (string.IsNullOrWhiteSpace(connectTarget))
+            {
+                var host = pairAddr.Split(':')[0];
+                connectTarget = host + ":5555";
+            }
+            else if (!connectTarget.Contains(':'))
+            {
+                connectTarget += ":5555";
+            }
+            IpTextBox.Text = connectTarget;
+
+            SetStatus(string.Format(T("connecting"), connectTarget));
+            Log($"\n>>> adb connect {connectTarget}");
+            var connResult = await RunAdbAsync("connect", connectTarget);
+            Log(connResult);
+
+            await LoadDevicesAsync();
+
+            if (connResult.Contains("connected", StringComparison.OrdinalIgnoreCase))
+            {
+                foreach (var item in DeviceComboBox.Items)
+                    if (item?.ToString() == connectTarget) { DeviceComboBox.SelectedItem = item; break; }
+                SetStatus(string.Format(T("connected"), connectTarget));
+            }
+            else
+            {
+                SetStatus(T("connectFailed"));
+            }
+        }
+        finally
+        {
+            PairButton.IsEnabled = true;
         }
     }
 
